@@ -13,7 +13,7 @@ The short list of features:
 Here is the brief example:
 ```
 // A tagged-union Tree
-type Tree = Branch of Int * Tree * Tree ? Leaf
+type Tree[A] = Branch of A * Tree * Tree ? Leaf
 
 // A function with pattern-matching that fetchs the nth element of the tree
 let nth[A](t: Tree[A], n: Int) = t
