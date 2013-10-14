@@ -5,10 +5,12 @@ Lettle is type-safe and purely functional programming language for JVM. It is in
 So, do not expect see all the sources avaliable and compilable.
 
 The short list of features:
-* Damas-Hindley-Milner type inference
-* Simple tagged unions
-* Pattern matching
-* Structural typing
+* Damas-Hindley-Milner Type Inference
+* Algebraic Data Types: Tagged Unions, Records
+* Pattern Matching
+* Lazy Evaluation
+* Memoization 
+* Structural Typing ???
 
 Here is the brief example:
 ```
