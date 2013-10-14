@@ -6,7 +6,7 @@ So, do not expect see all the sources avaliable and compilable.
 
 The short list of features:
 * Damas-Hindley-Milner Type Inference
-* Algebraic Data Types: Tagged Unions, Records
+* Compound Data Types: Tagged Unions, Records
 * Pattern Matching
 * Lazy Evaluation
 * Memoization 
@@ -24,3 +24,5 @@ let nth[A](t: Tree[A], n: Int) = t
   ? Branch(v, _, _, _) -> v
   ! fail "There is no $n in this tree."
 ```
+
+You can read [The Lettle Language Specification](https://github.com/vkostyukov/lettle/wiki/Specification).
