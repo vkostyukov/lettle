@@ -1,0 +1,76 @@
+// This is the draft version of 'lang.let' file - a standard Lettle library.
+// This is tiny piece of awesome code that powers user programs.
+
+// Starting with very base things like 'Unit', which is actually 'void'.
+// We defining it as am empty tuple. Awesome!
+tuple Unit
+
+// We also want some tuples.
+tuple Tuple[A, B](1: A, 2: B)
+tuple Tuple[A, B, C](1: A, 2: B, 3: C)
+tuple Tuple[A, B, C, D](1: A, 2: B, 3: C, 4: D)
+tuple Tuple[A, B, C, D](1: A, 2: B, 3: C, 4: D)
+tuple Tuple[A, B, C, D, E](1: A, 2: B, 3: C, 4: D, 5: E)
+tuple Tuple[A, B, C, D, E, F](1: A, 2: B, 3: C, 4: D, 5: E, 6: F)
+
+// How about just having an friendly aliases for tuples? Here we go.
+alias Pair[A, B] = Tuple[A, B]
+alias Triple[A, B, C] = Tuple[A, B, C]
+
+// A disjoint option in one line of code.
+union Option[A] = Some of A ? None
+
+// And the last thing - singly-linked list.
+union List[A] = Cons of A * List[A] ? Nil
+
+// Now we want to have some usefull functions for working with lists.
+
+// Takes the head of given list.
+let head[A](ls: List[A]) = ls 
+  ? Cons(hd, _) -> hd
+  ! fail "An empty list."
+
+// Takes the tail of given list.
+let tail[A](ls: List[A]) = ls
+  ? Cons(_, tl) -> tl
+  ! fail "An empty list."
+
+// Checks whether the given list is empty of not.
+let empty[A](ls: List[A]) = ls
+  ? Nil -> true
+  ! false
+
+// A cons operaion (prepend).
+let cons[A](x: A, ls: List[A]) = Cons(x, ls)
+
+// A snoc operation (append).
+let snoc[A](x: A, ls: List[A]) = ls
+  ? Cons(hd, tl) -> Cons(hd, x | snoc tl)
+  ! Cons(x, Nil)
+
+// Takes first 'n' elements from given list.
+let take[A](ls: List[A], n: Int) =
+  if (n == 0) Nil
+  else head ls | cons take(tail ls, n - 1)
+
+// Maps each element of given list to function.
+let map[A](ls: List[A], fn: A -> A) = ls
+  ? Cons(hd, tl) -> fn hd | cons map(tl, fn)
+  ! Nil
+
+//let fold[A](ls: List[A], fn: A * A -> A) = 
+//  if (emtpy ls) fail "An empty list."
+//  else loop(ls)
+//let fold::loop[A](ls: List[A]) ls
+//  ? Cons(hd, Nil) -> hd
+//  ? Cons(first, Cons(second, tl)) -> fn(first, second) fold(tl, fn)
+
+// Filters given list.
+let filter[A](ls: List[A], fn: A -> Boolean) = ls
+  ? Cons(hd, tl) when (fn(hd)) -> hd | cons filter(tl, fn)
+  ? Cons(_, tl) -> filter(tl, fn)
+  ! Nil
+
+// Some usefull functions
+let ??? = fail "Not implemented yet! Be patient!"
+let println(s: String) = `System.out.println(s)`
