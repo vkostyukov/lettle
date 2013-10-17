@@ -2,7 +2,7 @@
 // This is tiny piece of awesome code that powers user programs.
 
 // Starting with very base things like 'Unit', which is actually 'void'.
-// We defining it as am empty tuple. Awesome!
+// We are defining it as am empty tuple. Awesome!
 tuple Unit
 
 // We also want some tuples.
@@ -54,7 +54,7 @@ let take[A](ls: List[A], n: Int) =
   else head ls | cons take(tail ls, n - 1)
 
 // Maps each element of given list to function.
-let map[A](ls: List[A], fn: A -> A) = ls
+let map[A, B](ls: List[A], fn: A -> B) = ls
   ? Cons(hd, tl) -> fn hd | cons map(tl, fn)
   ! Nil
 
@@ -71,6 +71,79 @@ let filter[A](ls: List[A], fn: A -> Boolean) = ls
   ? Cons(_, tl) -> filter(tl, fn)
   ! Nil
 
+// Some smart constructors for List
+
+let List = Nil
+let List[A](x1: A) = Cons(x1, List)
+let List[A](x1: A, x2: A) = Cons(x1, List(x2))
+let List[A](x1: A, x2: A, x3: A) = Cons(x1, List(x2, x3))
+let List[A](x1: A, x2: A, x3: A, x4: A) = Cons(x1, List(x2, x3, x4))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A) = Cons(x1, List(x2, x3, x4, x5))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A) = Cons(x1, List(x2, x3, x4, x5, x6))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A, x10: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9, x10))
+
+// We would like to have a Range type
+tuple Range(from: Int, to: Int)
+
+let head(r: Range) = r 
+  ? Range(from, to) when (from <= to) -> from
+  ! fail "An empty range."
+
+let tail(r: Range) = r 
+  ? Range(from, to) when (from <= to) -> Range(from + 1, to)
+  ! fail "An empty range."
+
+let empty(r: Range) = r | Range(from, to) -> from > to
+
+let take(r: Range, n: Int) = r
+  ? Range(from, to) when (from + n <= to) -> Range(from, from + n)
+  ! fail "An empty range."
+
+let map[A](r: Range, fn: Int -> A) = r | Range(from, to) -> loop(from)
+let map::loop(from: Int) = 
+  if (from > to) Nil
+  else fn from | cons loop(from + 1)
+
+let fold = ???
+
+let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> loop(from)
+let filter::loop(from: Int) = 
+  if (from > to) Nil
+  else if (fn from) from | cons loop(from + 1)
+  else loop(from + 1)
+
+// Some of type conversions
+
+let Int(s: String) = `Integer.valueOf(s)` as Int
+let Real(s: String) = `Double.valueOf(s)` as Real
+let Bollean(s: String) = `Boolean.valueOf(s)` as Boolean
+
+let String(i: Int) = `String.valueOf(i)` as String
+let String(r: Real) = `String.valueOf(r)` as String
+let String(b: Boolean) = `String.valueOf(b)` as String
+
+// This allow as :
+// Range(1, 100) | List  <- converts to list
+let List(r: Range) = r | Range(from, to) -> loop(from)
+// 'to' alaliable here via dynamic context
+let List::loop(from: Int) = 
+  if (from > to) Nil
+  else from | cons loop(from + 1)
+
+// Some Math staff
+
+let min[#A](x: A, y: A) = if (x < y) x else y
+let max[#A](x: A, y: A) = if (x > y) x else y
+
+let abs(x: Int) = if (x > 0) x else -x
+let abs(x: Real) = if (x > 0.0) x else -x
+
+let sqrt(x: Real) = `Math.sqrt(x)` as Real
+
 // Some usefull functions
+
 let ??? = fail "Not implemented yet! Be patient!"
-let println(s: String) = `System.out.println(s)`
+let println(s: String) = `System.out.println(s)` as Unit
