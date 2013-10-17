@@ -102,18 +102,18 @@ let take(r: Range, n: Int) = r
   ? Range(from, to) when (from + n <= to) -> Range(from, from + n)
   ! fail "An empty range."
 
-let map[A](r: Range, fn: Int -> A) = r | Range(from, to) -> loop(from)
-let map::loop(from: Int) = 
+let map[A](r: Range, fn: Int -> A) = r | Range(from, to) -> mapRangeLoop(from, to, fn)
+let mapRangeLoop[A](from: Int, to: Int, fn: Int -> A) = 
   if (from > to) Nil
-  else fn from | cons loop(from + 1)
+  else fn from | cons mapRangeLoop(from + 1, to, fn)
 
 let fold = ???
 
-let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> loop(from)
-let filter::loop(from: Int) = 
+let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> filterRangeLoop(from, to, fn)
+let filterRangeLoop(from: Int, to: Int, fn: Int -> Boolean) = 
   if (from > to) Nil
-  else if (fn from) from | cons loop(from + 1)
-  else loop(from + 1)
+  else if (fn from) from | cons loop(from + 1, to, fn)
+  else loop(from + 1, to, fn)
 
 // Some of type conversions
 
@@ -121,17 +121,37 @@ let Int(s: String) = `Integer.valueOf(s)` as Int
 let Real(s: String) = `Double.valueOf(s)` as Real
 let Bollean(s: String) = `Boolean.valueOf(s)` as Boolean
 
+// The important functions for toString conversion
+
 let String(i: Int) = `String.valueOf(i)` as String
 let String(r: Real) = `String.valueOf(r)` as String
 let String(b: Boolean) = `String.valueOf(b)` as String
+let String(u: Unit) = ""
+
+let String[A](ls: List[A]) = "List(" + stringListLoop(ls) + ")"
+let stringListLoop[A](ls: List[A]) = ls 
+  ? Cons(hd, Nil) -> hd
+  ? Cons(hd, _) -> hd + ", "
+  ! ""
+
+let String[A, B](t: Tuple[A, B]) = t | Tuple(a, b) -> "Tuple($a, $b)"
+let String[A, B, C](t: Tuple[A, B, C]) = t | Tuple(a, b, c) -> "Tuple($a, $b, $c)" 
+let String[A, B, C, D](t: Tuple[A, B, C, D]) = t | Tuple(a, b, c, d) -> "Tuple($a, $b, $c, $d)" 
+let String[A, B, C, D, E](t: Tuple[A, B, C, D, E]) = t | Tuple(a, b, c, d, e) -> "Tuple($a, $b, $c, $d, $e)"
+let String[A, B, C, D, E, F](t: Tuple[A, B, C, D, E, F]) = t | Tuple(a, b, c, d, e, f) -> "Tuple($a, $b, $c, $d, $e, $f)"
+
+let String[A](o: Option[A]) = o
+  ? Some(a) -> "Some($a)"
+  ! "None"
+
+let String[A](r: Range) = r | Range(from, to) -> "Range($from, $to)"
 
 // This allow as :
 // Range(1, 100) | List  <- converts to list
-let List(r: Range) = r | Range(from, to) -> loop(from)
-// 'to' alaliable here via dynamic context
-let List::loop(from: Int) = 
+let List(r: Range) = r | Range(from, to) -> listRangeLoop(from, to)
+let listRangeLoop(from: Int, to: Int) = 
   if (from > to) Nil
-  else from | cons loop(from + 1)
+  else from | cons listRangeLoop(from + 1, to)
 
 // Some Math staff
 
