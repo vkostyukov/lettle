@@ -1,11 +1,13 @@
-// This is the draft version of 'lang.let' file - a standard Lettle library.
-// This is tiny piece of awesome code that powers user programs.
+//
+// This is 'lang.let' file - a standard Lettle library. 
+// (c) 2013, Vladimir Kostyukov http://vkostyukov.ru
+//
 
-// Starting with very base things like 'Unit', which is actually 'void'.
-// We are defining it as am empty tuple. Awesome!
+// Starting with very base things like 'Unit', which is actually an empty tuple
 tuple Unit
+let nothing = Unit
 
-// We also want some tuples.
+// Predefined tuples
 tuple Tuple[A, B](1: A, 2: B)
 tuple Tuple[A, B, C](1: A, 2: B, 3: C)
 tuple Tuple[A, B, C, D](1: A, 2: B, 3: C, 4: D)
@@ -13,66 +15,59 @@ tuple Tuple[A, B, C, D](1: A, 2: B, 3: C, 4: D)
 tuple Tuple[A, B, C, D, E](1: A, 2: B, 3: C, 4: D, 5: E)
 tuple Tuple[A, B, C, D, E, F](1: A, 2: B, 3: C, 4: D, 5: E, 6: F)
 
-// How about just having an friendly aliases for tuples? Here we go.
+// Friendly aliases for tuples
 alias Pair[A, B] = Tuple[A, B]
 alias Triple[A, B, C] = Tuple[A, B, C]
 
-// A disjoint option in one line of code.
+// A disjoint Option
 union Option[A] = Some of A ? None
 
-// And the last thing - singly-linked list.
+// A List
 union List[A] = Cons of A * List[A] ? Nil
 
-// Now we want to have some usefull functions for working with lists.
-
-// Takes the head of given list.
 let head[A](ls: List[A]) = ls 
   ? Cons(hd, _) -> hd
   ! fail "An empty list."
 
-// Takes the tail of given list.
 let tail[A](ls: List[A]) = ls
   ? Cons(_, tl) -> tl
   ! fail "An empty list."
 
-// Checks whether the given list is empty of not.
 let empty[A](ls: List[A]) = ls
   ? Nil -> true
   ! false
 
-// A cons operaion (prepend).
 let cons[A](x: A, ls: List[A]) = Cons(x, ls)
 
-// A snoc operation (append).
 let snoc[A](x: A, ls: List[A]) = ls
   ? Cons(hd, tl) -> Cons(hd, x | snoc tl)
   ! Cons(x, Nil)
 
-// Takes first 'n' elements from given list.
 let take[A](ls: List[A], n: Int) =
   if (n == 0) Nil
   else head ls | cons take(tail ls, n - 1)
 
-// Maps each element of given list to function.
 let map[A, B](ls: List[A], fn: A -> B) = ls
   ? Cons(hd, tl) -> fn hd | cons map(tl, fn)
   ! Nil
 
-//let fold[A](ls: List[A], fn: A * A -> A) = 
-//  if (emtpy ls) fail "An empty list."
-//  else loop(ls)
-//let fold::loop[A](ls: List[A]) ls
-//  ? Cons(hd, Nil) -> hd
-//  ? Cons(first, Cons(second, tl)) -> fn(first, second) fold(tl, fn)
+let fold[A, B](ls: List[A], neutral: B) = {fn} => foldListLoop(ls, acc, fn)
+let foldListLoop[A, B](ls: List[A], acc: B, fn: B * A -> B) = ls 
+  ? Cons(hd, tl) -> foldListLoop(tl, fn(acc, hd), fn)
+  ! acc
 
-// Filters given list.
+let reduce[A](ls: List[A], fn: A * A -> A) = ls
+  ? Cons(hd, tl) -> tl | fold(hd) {acc, x} => fn(acc, x)
+  ! fail "An empty list."
+
 let filter[A](ls: List[A], fn: A -> Boolean) = ls
-  ? Cons(hd, tl) when (fn(hd)) -> hd | cons filter(tl, fn)
+  ? Cons(hd, tl) when (fn hd) -> hd | cons filter(tl, fn)
   ? Cons(_, tl) -> filter(tl, fn)
   ! Nil
 
-// Some smart constructors for List
+let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(nothing) {_, x} => fn(x)
 
+// Smart constructors for List
 let List = Nil
 let List[A](x1: A) = Cons(x1, List)
 let List[A](x1: A, x2: A) = Cons(x1, List(x2))
@@ -85,7 +80,7 @@ let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A) = Cons(x1, L
 let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9))
 let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A, x10: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9, x10))
 
-// We would like to have a Range type
+// A Range type that can be treated as List
 tuple Range(from: Int, to: Int)
 
 let head(r: Range) = r 
@@ -107,7 +102,14 @@ let mapRangeLoop[A](from: Int, to: Int, fn: Int -> A) =
   if (from > to) Nil
   else fn from | cons mapRangeLoop(from + 1, to, fn)
 
-let fold = ???
+let fold[A](r: Range, neutral: A) = r | Range(from, to) -> {fn} => foldRangeLoop(from, to, neutral, fn)
+let foldRangeLoop[A](from: Int, to: Int, acc: A, fn: A * Int -> A) = 
+  if (from > to) acc
+  else foldRangeLoop(from + 1, to, fn(acc, from), fn)
+
+let reduce(r: Range, fn: Int * Int -> Int) = r
+  ? Range(from, to) when (from <= to) -> Range(from + 1, to) | fold(from) {acc, x} => fn(acc, x)
+  ! fail "An empty range."
 
 let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> filterRangeLoop(from, to, fn)
 let filterRangeLoop(from: Int, to: Int, fn: Int -> Boolean) = 
@@ -115,55 +117,29 @@ let filterRangeLoop(from: Int, to: Int, fn: Int -> Boolean) =
   else if (fn from) from | cons loop(from + 1, to, fn)
   else loop(from + 1, to, fn)
 
-// Some of type conversions
+let foreach(r: Range, fn: Int -> Unit) = r | fold(nothing) {_, x} => fn(x)
 
+// Functions for coverting given string into primite type value
 let Int(s: String) = `Integer.valueOf(s)` as Int
 let Real(s: String) = `Double.valueOf(s)` as Real
 let Bollean(s: String) = `Boolean.valueOf(s)` as Boolean
 
-// The important functions for toString conversion
-
-let String(i: Int) = `String.valueOf(i)` as String
-let String(r: Real) = `String.valueOf(r)` as String
-let String(b: Boolean) = `String.valueOf(b)` as String
-let String(u: Unit) = ""
-
+// The important functions for String conversion
 let String[A](ls: List[A]) = "List(" + stringListLoop(ls) + ")"
 let stringListLoop[A](ls: List[A]) = ls 
-  ? Cons(hd, Nil) -> hd
-  ? Cons(hd, _) -> hd + ", "
+  ? Cons(hd, Cons(_, _)) -> hd + ", "
+  ? Cons(hd, _) -> hd
   ! ""
 
-let String[A, B](t: Tuple[A, B]) = t | Tuple(a, b) -> "Tuple($a, $b)"
-let String[A, B, C](t: Tuple[A, B, C]) = t | Tuple(a, b, c) -> "Tuple($a, $b, $c)" 
-let String[A, B, C, D](t: Tuple[A, B, C, D]) = t | Tuple(a, b, c, d) -> "Tuple($a, $b, $c, $d)" 
-let String[A, B, C, D, E](t: Tuple[A, B, C, D, E]) = t | Tuple(a, b, c, d, e) -> "Tuple($a, $b, $c, $d, $e)"
-let String[A, B, C, D, E, F](t: Tuple[A, B, C, D, E, F]) = t | Tuple(a, b, c, d, e, f) -> "Tuple($a, $b, $c, $d, $e, $f)"
-
-let String[A](o: Option[A]) = o
-  ? Some(a) -> "Some($a)"
-  ! "None"
-
-let String[A](r: Range) = r | Range(from, to) -> "Range($from, $to)"
-
-// This allow as :
-// Range(1, 100) | List  <- converts to list
-let List(r: Range) = r | Range(from, to) -> listRangeLoop(from, to)
-let listRangeLoop(from: Int, to: Int) = 
-  if (from > to) Nil
-  else from | cons listRangeLoop(from + 1, to)
-
-// Some Math staff
-
+// Math routines
 let min[#A](x: A, y: A) = if (x < y) x else y
 let max[#A](x: A, y: A) = if (x > y) x else y
-
 let abs(x: Int) = if (x > 0) x else -x
 let abs(x: Real) = if (x > 0.0) x else -x
-
 let sqrt(x: Real) = `Math.sqrt(x)` as Real
+let power(x: Real, y: Real) = `Math.power(x, y)` as Real
 
-// Some usefull functions
-
+// Other usefull functions
+let not(b: Boolean) = if (b) false else true
 let ??? = fail "Not implemented yet! Be patient!"
 let println(s: String) = `System.out.println(s)` as Unit
