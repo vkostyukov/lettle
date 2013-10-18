@@ -38,7 +38,7 @@ let empty[A](ls: List[A]) = ls
   ! false
 
 let size[A](ls: List[A]) = ls
-  ? Cons(_, tl) -> 1 + size(tl)
+  ? Cons(_, tl) -> 1 + size tl
   ! 0
 
 let cons[A](x: A, ls: List[A]) = Cons(x, ls)
@@ -69,20 +69,30 @@ let filter[A](ls: List[A], fn: A -> Boolean) = ls
   ? Cons(_, tl) -> filter(tl, fn)
   ! Nil
 
-let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(Nothing) {_, x -> fn(x)}
+let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(Nothing) {_, x -> fn x}
 
 // Smart constructors for List
 let List = Nil
-let List[A](x1: A) = Cons(x1, List)
-let List[A](x1: A, x2: A) = Cons(x1, List(x2))
-let List[A](x1: A, x2: A, x3: A) = Cons(x1, List(x2, x3))
-let List[A](x1: A, x2: A, x3: A, x4: A) = Cons(x1, List(x2, x3, x4))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A) = Cons(x1, List(x2, x3, x4, x5))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A) = Cons(x1, List(x2, x3, x4, x5, x6))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9))
-let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A, x10: A) = Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9, x10))
+let List[A](x1: A) = 
+  Cons(x1, List)
+let List[A](x1: A, x2: A) = 
+  Cons(x1, List(x2))
+let List[A](x1: A, x2: A, x3: A) = 
+  Cons(x1, List(x2, x3))
+let List[A](x1: A, x2: A, x3: A, x4: A) = 
+  Cons(x1, List(x2, x3, x4))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A) = 
+  Cons(x1, List(x2, x3, x4, x5))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A) = 
+  Cons(x1, List(x2, x3, x4, x5, x6))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A) = 
+  Cons(x1, List(x2, x3, x4, x5, x6, x7))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A) = 
+  Cons(x1, List(x2, x3, x4, x5, x6, x7, x8))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A) = 
+  Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9))
+let List[A](x1: A, x2: A, x3: A, x4: A, x5: A, x6: A, x7: A, x8: A, x9: A, x10: A) = 
+  Cons(x1, List(x2, x3, x4, x5, x6, x7, x8, x9, x10))
 
 // A Range type that can be treated as List
 tuple Range(from: Int, to: Int)
@@ -114,7 +124,7 @@ let reduce(r: Range, fn: Int * Int -> Int) = r | map _ | reduce fn
 
 let filter(r: Range, fn: Int -> Boolean) = r | map _ | filter fn
 
-let foreach(r: Range, fn: Int -> Unit) = r | fold(Nothing) {_, x -> fn(x)}
+let foreach(r: Range, fn: Int -> Unit) = r | fold(Nothing) {_, x -> fn x}
 
 // Functions for coverting given string into primite type value
 let Int(s: String) = `Integer.valueOf(s)` as Int
