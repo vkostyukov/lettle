@@ -37,6 +37,10 @@ let empty[A](ls: List[A]) = ls
   ? Nil -> true
   ! false
 
+let size[A](ls: List[A]) = ls
+  ? Cons(_, tl) -> 1 + size(tl)
+  ! 0
+
 let cons[A](x: A, ls: List[A]) = Cons(x, ls)
 
 let snoc[A](x: A, ls: List[A]) = ls
@@ -93,6 +97,8 @@ let tail(r: Range) = r
 
 let empty(r: Range) = r | Range(from, to) -> from > to
 
+let size(r: Range) = r | Range(from, to) -> to - from + 1
+
 let take(r: Range, n: Int) = r
   ? Range(from, to) when (from + n <= to) -> Range(from, from + n)
   ! fail "An empty range."
@@ -102,20 +108,11 @@ let mapRangeLoop[A](from: Int, to: Int, fn: Int -> A) =
   if (from > to) Nil
   else fn from | cons mapRangeLoop(from + 1, to, fn)
 
-let fold[A](r: Range, neutral: A) = r | Range(from, to) -> {fn -> foldRangeLoop(from, to, neutral, fn)}
-let foldRangeLoop[A](from: Int, to: Int, acc: A, fn: A * Int -> A) = 
-  if (from > to) acc
-  else foldRangeLoop(from + 1, to, fn(acc, from), fn)
+let fold[A](r: Range, neutral: A) = r | map _ | fold(neutral)
 
-let reduce(r: Range, fn: Int * Int -> Int) = r
-  ? Range(from, to) when (from <= to) -> Range(from + 1, to) | fold(from) {acc, x -> fn(acc, x)}
-  ! fail "An empty range."
+let reduce(r: Range, fn: Int * Int -> Int) = r | map _ | reduce fn
 
-let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> filterRangeLoop(from, to, fn)
-let filterRangeLoop(from: Int, to: Int, fn: Int -> Boolean) = 
-  if (from > to) Nil
-  else if (fn from) from | cons loop(from + 1, to, fn)
-  else loop(from + 1, to, fn)
+let filter(r: Range, fn: Int -> Boolean) = r | map _ | filter fn
 
 let foreach(r: Range, fn: Int -> Unit) = r | fold(Nothing) {_, x -> fn(x)}
 
