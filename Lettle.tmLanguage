@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>let</string>
+	</array>
+	<key>name</key>
+	<string>Lettle</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>comment</key>
+			<string>Lettle keywords</string>
+			<key>match</key>
+			<string>\b(alias|as|else|fail|let|if|of|tuple|union|when)\b</string>
+			<key>name</key>
+			<string>keyword.source.let</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Numeric constants</string>
+			<key>match</key>
+			<string>\b[0-9]+\b</string>
+			<key>name</key>
+			<string>constant.numeric.let</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Built in types</string>
+			<key>match</key>
+			<string>\b(Int|Real|Boolean|String|Unit|List|Option|Tuple|Pair|Triple|Range|Cons|Some)\b</string>
+			<key>name</key>
+			<string>support.type.let</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>String constant</string>
+			<key>match</key>
+			<string>"(\\"|[^"])*"</string>
+			<key>name</key>
+			<string>string.let</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\/\/.*$</string>
+			<key>name</key>
+			<string>comment.let</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(-&gt;|\!|\?|\||true|false|Nil|None|Nothing)</string>
+			<key>name</key>
+			<string>constant.character.let</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.let</string>
+	<key>uuid</key>
+	<string>c75fce86-de5e-40f0-b42e-1504c17b784f</string>
+</dict>
+</plist>

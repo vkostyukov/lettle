@@ -5,7 +5,7 @@
 
 // Starting with very base things like 'Unit', which is actually an empty tuple
 tuple Unit
-let nothing = Unit
+let Nothing = Unit
 
 // Predefined tuples
 tuple Tuple[A, B](1: A, 2: B)
@@ -51,13 +51,13 @@ let map[A, B](ls: List[A], fn: A -> B) = ls
   ? Cons(hd, tl) -> fn hd | cons map(tl, fn)
   ! Nil
 
-let fold[A, B](ls: List[A], neutral: B) = {fn} => foldListLoop(ls, acc, fn)
+let fold[A, B](ls: List[A], neutral: B) = {fn -> foldListLoop(ls, acc, fn)}
 let foldListLoop[A, B](ls: List[A], acc: B, fn: B * A -> B) = ls 
   ? Cons(hd, tl) -> foldListLoop(tl, fn(acc, hd), fn)
   ! acc
 
 let reduce[A](ls: List[A], fn: A * A -> A) = ls
-  ? Cons(hd, tl) -> tl | fold(hd) {acc, x} => fn(acc, x)
+  ? Cons(hd, tl) -> tl | fold(hd) {acc, x -> fn(acc, x)}
   ! fail "An empty list."
 
 let filter[A](ls: List[A], fn: A -> Boolean) = ls
@@ -65,7 +65,7 @@ let filter[A](ls: List[A], fn: A -> Boolean) = ls
   ? Cons(_, tl) -> filter(tl, fn)
   ! Nil
 
-let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(nothing) {_, x} => fn(x)
+let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(Nothing) {_, x -> fn(x)}
 
 // Smart constructors for List
 let List = Nil
@@ -102,13 +102,13 @@ let mapRangeLoop[A](from: Int, to: Int, fn: Int -> A) =
   if (from > to) Nil
   else fn from | cons mapRangeLoop(from + 1, to, fn)
 
-let fold[A](r: Range, neutral: A) = r | Range(from, to) -> {fn} => foldRangeLoop(from, to, neutral, fn)
+let fold[A](r: Range, neutral: A) = r | Range(from, to) -> {fn -> foldRangeLoop(from, to, neutral, fn)}
 let foldRangeLoop[A](from: Int, to: Int, acc: A, fn: A * Int -> A) = 
   if (from > to) acc
   else foldRangeLoop(from + 1, to, fn(acc, from), fn)
 
 let reduce(r: Range, fn: Int * Int -> Int) = r
-  ? Range(from, to) when (from <= to) -> Range(from + 1, to) | fold(from) {acc, x} => fn(acc, x)
+  ? Range(from, to) when (from <= to) -> Range(from + 1, to) | fold(from) {acc, x -> fn(acc, x)}
   ! fail "An empty range."
 
 let filter(r: Range, fn: Int -> Boolean) = r | Range(from, to) -> filterRangeLoop(from, to, fn)
@@ -117,12 +117,12 @@ let filterRangeLoop(from: Int, to: Int, fn: Int -> Boolean) =
   else if (fn from) from | cons loop(from + 1, to, fn)
   else loop(from + 1, to, fn)
 
-let foreach(r: Range, fn: Int -> Unit) = r | fold(nothing) {_, x} => fn(x)
+let foreach(r: Range, fn: Int -> Unit) = r | fold(Nothing) {_, x -> fn(x)}
 
 // Functions for coverting given string into primite type value
 let Int(s: String) = `Integer.valueOf(s)` as Int
 let Real(s: String) = `Double.valueOf(s)` as Real
-let Bollean(s: String) = `Boolean.valueOf(s)` as Boolean
+let Boolean(s: String) = `Boolean.valueOf(s)` as Boolean
 
 // The important functions for String conversion
 let String[A](ls: List[A]) = "List(" + stringListLoop(ls) + ")"
