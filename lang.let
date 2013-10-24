@@ -153,6 +153,14 @@ let abs(x: Real) = if (x > 0.0) x else -x
 let sqrt(x: Real) = `Math.sqrt(x)` as Real
 let power(x: Real, y: Real) = `Math.power(x, y)` as Real
 
+// Bitwise functions
+let and(x: Int, y: Int) = `x & y` as Int
+let or(x: Int, y: Int) = `x | y` as Int
+let xor(x: Int, y: Int) = `x ^ y` as Int
+let neg(x: Int) = `~x` as Int
+let shr(x: Int, n: Int) = `x << n` as Int
+let shl(x: Int, n: Int) = `x >> n` as Int
+
 // Other usefull functions
 let not(b: Boolean) = if (b) false else true
 let ??? = fail "Not implemented yet! Be patient!"
