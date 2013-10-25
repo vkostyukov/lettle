@@ -1,43 +1,30 @@
 The Lettle Programming Language
 ===============================
 
-Lettle is type-safe and purely functional programming language for JVM. It is in early development/design phase now. 
-So, do not expect see all the sources avaliable and compilable.
+Lettle is type-safe and purely functional programming language for JVM. [The Lettle Language Specification](https://github.com/vkostyukov/lettle/wiki/Specification).
 
-The short list of features:
 * Damas-Hindley-Milner Type Inference
 * Compound Data Types: Tagged Unions, Records
 * Pattern Matching
-* Lazy Evaluation
-* Memoization 
 * Structural Typing ???
 
-Here is the brief example:
-```
-// A tagged-union Tree
-union Tree[A] = Branch of A * Tree * Tree ? Leaf
+### Examples
 
-// A function with pattern-matching that fetchs the nth element of the tree
-let nth[A](t: Tree[A], n: Int) = t
-  ? Branch(_, l, _, s) when (n < s) -> nth(l, n) 
-  ? Branch(_, _, r, s) when (n > s) -> nth(r, n - s - 1)
-  ? Branch(v, _, _, _) -> v
-  ! fail "There is no $n in this tree."
+[_Project Euler #1_](http://projecteuler.net/problem=1)
+```
+let euler1 = Range(1, 999) | filter {x -> (x % 3 == 0 || x % 5 == 0)} | reduce _ + _
 ```
 
-How to use standard library `lang.let` (Project Euler #1):
+[_Project Euler #5_](http://projecteuler.net/problem=5)
 ```
-let euler1 = Range(1, 999) | filter {x} -> (x % 3 == 0 || x % 5 == 0) | fold _ + _
-```
-
-```
-tuple Student(name: String, rank: Int)
-
-let students = List(Tuple("Ivan", 16), Tuple("Pavel", 22), Tuple("Denis", 24), Tuple("Igor", 22))
-
-let goodStudents = students | filter {Student(_, r)} -> r >= 22
-
-let printGoodStudents = goodStudents| foreach {Student(n, r)} -> println "A good student: $n (rank is $r)"
+let check(n: Int) = Range(1, 20) | fold(true) {acc, x -> acc && n % x == 0}
+let loop(n: Int) = if (check(n)) n else loop(n + 1)
+let euler5 = loop(20)
 ```
 
-You can read [The Lettle Language Specification](https://github.com/vkostyukov/lettle/wiki/Specification).
+[_Project Euler #6_](http://projecteuler.net/problem=6)
+```
+let sumOfSquares = Range(1, 1000) | map {x -> x * x} | reduce _ + _
+let squareOfSum = Range(1, 1000) | reduce _ + _ | x -> x * x
+let euler6 = sumOfSquares - squareOfSum
+```
