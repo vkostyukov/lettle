@@ -1,12 +1,13 @@
 The Lettle Programming Language
 ===============================
 
-Lettle is type-safe and purely functional programming language for JVM. [The Lettle Language Specification](https://github.com/vkostyukov/lettle/wiki/Specification).
+[The Lettle Language Specification](https://github.com/vkostyukov/lettle/wiki/Specification).
 
-* Damas-Hindley-Milner Type Inference
-* Compound Data Types: Tagged Unions, Records
-* Pattern Matching
-* Structural Typing ???
+What I would like to see in Lettle:
+
+1. [x] Pure FP (Damas-Hindley-Milner Type Inference, Compound Data Types, Pattern Matching, etc.)
+2. [ ] Real Modules (Cake Pattern?)
+3. [ ] Subtype Polymorphic Dispatch
 
 ### Examples
 
