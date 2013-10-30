@@ -22,6 +22,9 @@ alias Triple[A, B, C] = Tuple[A, B, C]
 // A disjoint Option
 union Option[A] = Some of A ? None
 
+// A disjoint Either
+union Either[A, B] = Left of A ? Right of B
+
 // A List
 union List[A] = Cons of A * List[A] ? Nil
 
@@ -162,6 +165,7 @@ let shr(x: Int, n: Int) = `x << n` as Int
 let shl(x: Int, n: Int) = `x >> n` as Int
 
 // Other usefull functions
+let times(x: Int, fn: -> Unit) = Range(1, x) | foreach {fn}
 let not(b: Boolean) = if (b) false else true
 let ??? = fail "Not implemented yet! Be patient!"
 let println(s: String) = `System.out.println(s)` as Unit
