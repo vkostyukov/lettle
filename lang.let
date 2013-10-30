@@ -75,8 +75,8 @@ let filter[A](ls: List[A], fn: A -> Boolean) = ls
 let foreach[A](ls: List[A], fn: A -> Unit) = ls | fold(Nothing) {_, x -> fn x}
 
 let reverse[A](ls: List[A]) = reverseListLoop(ls, Nil)
-let reverseListLoop[A](xs: List[A], ys: List[A]) = xs
-  ? Cons(hd, tl) -> reverseListLoop(tl, hd | cons ys)
+let reverseListLoop[A](ls: List[A], ls': List[A]) = ls
+  ? Cons(hd, tl) -> reverseListLoop(tl, hd | cons ls')
   ! ys
 
 // Smart constructors for List
