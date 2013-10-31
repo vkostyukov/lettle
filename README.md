@@ -7,7 +7,7 @@ What I would like to see in Lettle:
 
 1. [x] Pure FP (Damas-Hindley-Milner Type Inference, Compound Data Types, Pattern Matching, etc.)
 2. [ ] Real Modules (Cake Pattern?)
-3. [ ] Subtype Polymorphic Dispatch
+3. [ ] It should solve the Expression Problem (Subtype Polymorphic Dispatch?)
 
 ### Examples
 
